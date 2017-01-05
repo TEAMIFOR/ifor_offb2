@@ -9,14 +9,12 @@
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "mansoo_offboard_node");
+    ros::init(argc, argv, "ifor_offb2_node");
 
     ros::Rate rate_50(50.0);
     ros::Rate rate_20(20.0);
 
     ros::Publisher local_pos_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 10);
-    ros::Publisher pub_att_ = nh_.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_attitude/attitude", 10);
-    ros::Publisher pub_thr_ = nh_.advertise<std_msgs::Float64>("/mavros/setpoint_attitude/att_throttle", 10); 
     ros::ServiceClient arming_client_ = nh_.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
     ros::ServiceClient disarming_client_ = nh_.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/disarming");
     ros::ServiceClient set_mode_client_ = nh_.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
