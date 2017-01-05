@@ -6,10 +6,10 @@
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
 
-mavros_msgs::State current_state_;
-void cbState(const mavros_msgs::State::ConstPtr& msg)
+mavros_msgs::State current_state;
+void state_callb (const mavros_msgs::State::ConstPtr& msg)
 {
-    current_state_ = *msg;
+    current_state = *msg;
 }
 
 
@@ -24,81 +24,123 @@ int main(int argc, char **argv)
 
 
     ros::NodeHandle n;
-    ros::ServiceClient arming_client_ = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
-    ros::ServiceClient disarming_client_ = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/disarming");
-    ros::ServiceClient set_mode_client_ = n.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
-	ros::Subscriber state_sub_ = n.subscribe<mavros_msgs::State>("mavros/state", 10, cbState);
-	
+
+    ros::ServiceClient arming_cl = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
+    ros::ServiceClient disarming_cl = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/disarming");
+    ros::ServiceClient set_mode_cl = n.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
+	ros::Subscriber state_sub = n.subscribe<mavros_msgs::State>("mavros/state", 10, state_callb);
+	ros::Publisher local_pos_pub = n.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 10);
+
+
 	const std_msgs::String::ConstPtr& msg1;
 	
-    ros::Subscriber move_x_sub_ = n.subscribe("ifor_drone/x_pos", 10, msg1 );
+    ros::Subscriber x_coord_sub = n.subscribe("ifor_drone/x_pos", 10, msg1 );
     std::string::size_type sz;   // alias of size_t
     int pos_x = std::stoi (msg1->data, &sz);
-	targetPose_.pose.position.x = pos_x;
+	target_loc.pose.position.x = pos_x;
 
     const std_msgs::String::ConstPtr& msg2;
     
-    ros::Subscriber move_y_sub_ = n.subscribe("ifor_drone/y_pos", 10, msg2 );
-    targetPose_.pose.position.y = pos_y;
+    ros::Subscriber y_coord_sub = n.subscribe("ifor_drone/y_pos", 10, msg2 );
+    target_loc.pose.position.y = pos_y;
     int pos_y = std::stoi (msg2->data, &sz);
 
     const std_msgs::String::ConstPtr& msg3;
 
-    ros::Subscriber move_z_sub_ = n.subscribe("ifor_drone/z_pos", 10, msg3 );
+    ros::Subscriber z_coord_sub = n.subscribe("ifor_drone/z_pos", 10, msg3 );
     int pos_z = std::stoi (msg3->data, &sz);
-    targetPose_.pose.position.z = pos_z;
+    target_loc.pose.position.z = pos_z;
 
-    ros::Publisher local_pos_pub_ = n.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 10);
-
+    
 
     // wait for FCU connection
-    while(ros::ok() && current_state_.connected){
+    while(ros::ok() && current_state.connected){
         ros::spinOnce();
         rate_20.sleep();
     }     
 
 
-    geometry_msgs::PoseStamped mPose[5];
-    mPose[0].pose.position.x = 3;
-    mPose[0].pose.position.y = 3;
-    mPose[0].pose.position.z = 5;
-    mPose[1].pose.position.x = -3;
-    mPose[1].pose.position.y = 3;
-    mPose[1].pose.position.z = 5;
-    mPose[2].pose.position.x = 3;
-    mPose[2].pose.position.y = -3;
-    mPose[2].pose.position.z = 5;
-    mPose[3].pose.position.x = -3;
-    mPose[3].pose.position.y = -3;
-    mPose[3].pose.position.z = 5;
-    mPose[4].pose.position.x = 0;
-    mPose[4].pose.position.y = 0;
-    mPose[4].pose.position.z = 5;
+    geometry_msgs::PoseStamped mission_loc_arr[5];
+    mission_loc_arr[0].pose.position.x = 3;
+    mission_loc_arr[0].pose.position.y = 3;
+    mission_loc_arr[0].pose.position.z = 5;
+    mission_loc_arr[1].pose.position.x = -3;
+    mission_loc_arr[1].pose.position.y = 3;
+    mission_loc_arr[1].pose.position.z = 5;
+    mission_loc_arr[2].pose.position.x = 3;
+    mission_loc_arr[2].pose.position.y = -3;
+    mission_loc_arr[2].pose.position.z = 5;
+    mission_loc_arr[3].pose.position.x = -3;
+    mission_loc_arr[3].pose.position.y = -3;
+    mission_loc_arr[3].pose.position.z = 5;
+    mission_loc_arr[4].pose.position.x = 0;
+    mission_loc_arr[4].pose.position.y = 0;
+    mission_loc_arr[4].pose.position.z = 5;
     //  geometry_msgs::PoseStamped pose;
     for (int count = 0; count < 1 && ros::ok(); count++)
     {
-        drone.targetPose_.pose.position.x = mPose[0].pose.position.x;
-        drone.targetPose_.pose.position.y = mPose[0].pose.position.y;
-        drone.targetPose_.pose.position.z = mPose[0].pose.position.z;
+        target_loc.pose.position.x = mission_loc_arr[0].pose.position.x;
+        target_loc.pose.position.y = mission_loc_arr[0].pose.position.y;
+        target_loc.pose.position.z = mission_loc_arr[0].pose.position.z;
         int nPosIndex = 0;
         while (ros::ok())
         {
-            if (!(abs(drone.targetPose_.pose.position.x - drone.localPose_.pose.position.x) < 0.03 &&
-                  abs(drone.targetPose_.pose.position.y - drone.localPose_.pose.position.y) < 0.03 &&
-                  abs(drone.targetPose_.pose.position.z - drone.localPose_.pose.position.z) < 0.03) )
+            if (!(abs(target_loc.pose.position.x - localPose_.pose.position.x) < 0.03 &&
+                  abs(target_loc.pose.position.y - localPose_.pose.position.y) < 0.03 &&
+                  abs(target_loc.pose.position.z - localPose_.pose.position.z) < 0.03) )
             {
 
 
-                drone.moveToPos();
+                mavros_msgs::SetMode set_offb_mode;
+			    mavros_msgs::CommandBool arm_cmd;
+			    
+			    set_offb_mode.request.custom_mode = "OFFBOARD";
+			 
+			    arm_cmd.request.value = true;
+
+			    ros::Time last_request = ros::Time::now();
+			    
+			    while (ros::ok()) {
+			        if( current_state.mode != "OFFBOARD" && (ros::Time::now() - last_request > ros::Duration(5.0)))
+			        {
+			            if( set_mode_cl.call(set_offb_mode) && set_offb_mode.response.success)
+			            {
+			                ROS_INFO("Offboard mode enabled");
+			            }
+			            last_request = ros::Time::now();
+			        
+			        }else{
+
+			            if( !current_state.armed && (ros::Time::now() - last_request > ros::Duration(5.0)))
+			            {
+			                if( arming_cl.call(arm_cmd) &&
+			                    arm_cmd.response.success)
+			                {
+			                    ROS_INFO("Drone armed");
+			                }
+
+			                last_request = ros::Time::now();
+			            }
+			        }
+			       
+			        if ( abs(target_loc.pose.position.x - localPose_.pose.position.x) < 0.03 &&
+			             abs(target_loc.pose.position.y - localPose_.pose.position.y) < 0.03 &&
+			             abs(target_loc.pose.position.z - localPose_.pose.position.z) < 0.03)
+			            return;
+			        else
+			            local_pos_pub.publish(target_loc);
+
+			        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			    }
             
 
 
             }else{
                     if (++nPosIndex == 5)
                     break;
-                    drone.targetPose_.pose.position.x = mPose[nPosIndex].pose.position.x;
-                    drone.targetPose_.pose.position.y = mPose[nPosIndex].pose.position.y;
-                    drone.targetPose_.pose.position.z = mPose[nPosIndex].pose.position.z;
+                    target_loc.pose.position.x = mission_loc_arr[nPosIndex].pose.position.x;
+                    target_loc.pose.position.y = mission_loc_arr[nPosIndex].pose.position.y;
+                    target_loc.pose.position.z = mission_loc_arr[nPosIndex].pose.position.z;
             }
             rate_50.sleep();
         }
@@ -112,7 +154,7 @@ int main(int argc, char **argv)
     land_cmd.request.min_pitch = 0;
     land_cmd.request.yaw = 0;
     
-    if(land_client_.call(land_cmd)){
+    if(land_cl.call(land_cmd)){
         ROS_INFO("land_cmd send ok %d", land_cmd.response.success);
     }else{
         ROS_ERROR("Failed Land");
