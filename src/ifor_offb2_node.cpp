@@ -215,21 +215,21 @@ void ifor_drone::set_mission(int repeat)
     mission_pos_arr[0].pose.position.y = 3;
     mission_pos_arr[0].pose.position.z = 2;
 
-    mission_pos_arr[1].pose.position.x = -1;
-    mission_pos_arr[1].pose.position.y = 3;
-    mission_pos_arr[1].pose.position.z = 20;
+    mission_pos_arr[1].pose.position.x = 3;
+    mission_pos_arr[1].pose.position.y = -3;
+    mission_pos_arr[1].pose.position.z = 2;
 
-    mission_pos_arr[2].pose.position.x = 1;
-    mission_pos_arr[2].pose.position.y = -1;
-    mission_pos_arr[2].pose.position.z = 20;
+    mission_pos_arr[2].pose.position.x = -3;
+    mission_pos_arr[2].pose.position.y = -3;
+    mission_pos_arr[2].pose.position.z = 2;
 
-    mission_pos_arr[3].pose.position.x = 3;
+    mission_pos_arr[3].pose.position.x = -3;
     mission_pos_arr[3].pose.position.y = 3;
-    mission_pos_arr[3].pose.position.z = 20;
+    mission_pos_arr[3].pose.position.z = 2;
 
-    mission_pos_arr[4].pose.position.x = 5;
-    mission_pos_arr[4].pose.position.y = -3;
-    mission_pos_arr[4].pose.position.z = 20;
+    mission_pos_arr[4].pose.position.x = 0;
+    mission_pos_arr[4].pose.position.y = 0;
+    mission_pos_arr[4].pose.position.z = 2;
 
     for (int count = 0; count < repeat && ros::ok(); count++)
     {
@@ -264,7 +264,7 @@ void ifor_drone::land()
 {
     mavros_msgs::CommandTOL land_cmd;
 
-    land_cmd.request.altitude = 20;
+    land_cmd.request.altitude = 2;
     land_cmd.request.latitude = 0;
     land_cmd.request.longitude = 0;
     land_cmd.request.min_pitch = 0;
