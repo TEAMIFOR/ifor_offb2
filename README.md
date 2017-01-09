@@ -1,15 +1,11 @@
-# ifor_offb2
+# OFFBOARD DRONE CONTROL (exec w/o ros_control)
 
-px4 sim environment && offboard setpoint'ing :P
+COMMENTS
+Sim for offboard control without controller node (no PID).
+Mission location is being set by a 3 coord mission_pos_arr, change it to alter mission, deafult set to form "Z" shape
+Ros event check is changed to thread processing because event received from ros is not processed when entering console (singular nature of code execution) 
 
-T1> cd catkin_ws/src/Firmware/
+INSTRUCTIONS:
+"make posix_sitl_default gazebo" then build and run this package
 
-T1> make posix_sitl_default gazebo
-
-#
-
-T2> cd catkin_ifor_ws/
-
-T2> source devel/setup.bash
-
-T2> roslaunch ifor_offb2 ifor_offb2_sim.launch
+ 
