@@ -22,13 +22,21 @@ public:
 public:
     
     ros::NodeHandle     			n;
+
     ros::Subscriber     			state_sub;
     ros::Subscriber     			location_sub;
+
     ros::Subscriber     			x_coord_sub;
     ros::Subscriber     			y_coord_sub;
     ros::Subscriber     			z_coord_sub;
+
     ros::Publisher      			local_pos_pub;
+
+    ros::ServiceClient              arming_cl;
+    ros::ServiceClient              disarming_cl;
+    ros::ServiceClient              set_mode_cl;
     ros::ServiceClient 				land_cl;
+    
     mavros_msgs::State  			current_state;
     geometry_msgs::PoseStamped      target_loc;
     geometry_msgs::PoseStamped      local_loc;
@@ -47,9 +55,9 @@ int main(int argc, char **argv)
     ifor_drone ifor_drone_obj; 
 
 
-    ros::ServiceClient arming_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
-    ros::ServiceClient disarming_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/disarming");
-    ros::ServiceClient set_mode_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
+    ifor_drone_obj.arming_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
+    ifor_drone_obj.disarming_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/disarming");
+    ifor_drone_obj.set_mode_cl = ifor_drone_obj.n.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
 	ifor_drone_obj.state_sub = ifor_drone_obj.n.subscribe<mavros_msgs::State>("mavros/state", 10, state_callb);
 	ifor_drone_obj.local_pos_pub = ifor_drone_obj.n.advertise<geometry_msgs::PoseStamped>("mavros/setpoint_position/local", 10);
 	ifor_drone_obj.land_cl = n.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/land");
