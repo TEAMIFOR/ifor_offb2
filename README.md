@@ -1,7 +1,6 @@
-# OFFBOARD DRONE CONTROL (exec w/o ros_control)
+# OFFBOARD DRONE CONTROL 
 
 <h4>COMMENTS:</h4>
-Sim for offboard control without controller node (no PID).
 
 Mission location is being set by a 3 coord mission_pos_arr, change it to alter mission, deafult set to form "Z" shape
 
