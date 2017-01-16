@@ -18,7 +18,7 @@
 	<param name="mocap/use_pose" value="false"/>
 </node>
 
-<node name="dcu_drone" pkg="dcu_drone" type="offboard_node" output="screen">
+<node name="ifor_offb2_node" pkg="ifor_offb2" type="ifor_offb2_node" output="screen">
 </node>
 
 </launch>
