@@ -246,7 +246,7 @@ void ifor_drone::set_mission(int repeat)
             }
             else
             {
-                if (++nPosIndex == 5)
+                if (++nPosIndex == 30)
                     break;
 
                 target_loc.pose.position.x = mission_pos_arr[nPosIndex].pose.position.x;
