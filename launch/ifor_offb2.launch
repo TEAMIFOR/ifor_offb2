@@ -1,6 +1,6 @@
 <launch>
 
-<arg name="fcu_url" default= "/dev/ttyACM0:921600"/>
+<arg name="fcu_url" default= "/dev/ttyUSB0:921600"/>
 <arg name="gcs_url" default="udp://:14556@192.168.1.5:14550" />
 <arg name="tgt_system" default="1" />
 <arg name="tgt_component" default="1" />
@@ -21,7 +21,8 @@
 	<rosparam command="load" file="$(find mavros)/launch/px4_config.yaml" />
 </node>
 
-<node name="ifor_offb2_node" pkg="ifor_offb2" type="ifor_offb2_node" output="screen">
-</node>
+<!--node name="ifor_offb2_node" pkg="ifor_offb2" type="ifor_offb2_node" output="screen">
+
+</node-->
 
 </launch>

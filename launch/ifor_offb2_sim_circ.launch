@@ -24,7 +24,9 @@
 
 </node-->
 
-<node name="ifor_offb2_node" pkg="ifor_offb2" type="ifor_offb2_node" output="screen">
+<node name="test_node" pkg="ifor_offb2" type="test_node" output="screen">
+	<param name="wn" value="0.2" />
+	<param name="r" value="3.0" />
 </node>
 
 </launch>

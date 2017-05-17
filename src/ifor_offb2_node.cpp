@@ -16,9 +16,9 @@
 
 #include <math.h>
 
- class ifor_drone
- {
- public:
+class ifor_drone
+{
+public:
     ifor_drone() {}
     ~ifor_drone() {}
 
@@ -211,50 +211,30 @@ void ifor_drone::set_mission(int repeat)
 
     geometry_msgs::PoseStamped mission_pos_arr[6];
 
-    mission_pos_arr[0].pose.position.x = 3;
-    mission_pos_arr[0].pose.position.y = 3;
-    mission_pos_arr[0].pose.position.z = 10;
+    mission_pos_arr[0].pose.position.x = 1;
+    mission_pos_arr[0].pose.position.y = 1;
+    mission_pos_arr[0].pose.position.z = 1.75f;
 
-    mission_pos_arr[1].pose.position.x = -3;
-    mission_pos_arr[1].pose.position.y = 3;
-    mission_pos_arr[1].pose.position.z = 10;
+    mission_pos_arr[1].pose.position.x = -1;
+    mission_pos_arr[1].pose.position.y = 1;
+    mission_pos_arr[1].pose.position.z = 1.75f;
 
-    mission_pos_arr[2].pose.position.x = -3;
-    mission_pos_arr[2].pose.position.y = -3;
-    mission_pos_arr[2].pose.position.z = 10;
+    mission_pos_arr[2].pose.position.x = -1;
+    mission_pos_arr[2].pose.position.y = -1;
+    mission_pos_arr[2].pose.position.z = 1.75f;
 
-    mission_pos_arr[3].pose.position.x = 3;
-    mission_pos_arr[3].pose.position.y = -3;
-    mission_pos_arr[3].pose.position.z = 10;
+    mission_pos_arr[3].pose.position.x = 1;
+    mission_pos_arr[3].pose.position.y = -1;
+    mission_pos_arr[3].pose.position.z = 1.75f;
 
-    mission_pos_arr[4].pose.position.x = 3;
-    mission_pos_arr[4].pose.position.y = 3;
-    mission_pos_arr[4].pose.position.z = 10;
+    mission_pos_arr[4].pose.position.x = 1;
+    mission_pos_arr[4].pose.position.y = 1;
+    mission_pos_arr[4].pose.position.z = 1.75f;
 
     mission_pos_arr[5].pose.position.x = 0;
     mission_pos_arr[5].pose.position.y = 0;
-    mission_pos_arr[5].pose.position.z = 10;
- 
- /*   
-    int m=0,n=0;
-    for(int l=0;l<17;l++)
-    {
-
-        mission_pos_arr[l].pose.position.z = 2;
-        mission_pos_arr[l].pose.position.x = m;
-        mission_pos_arr[l].pose.position.y = n;
-        if(m<4)
-        {
-            m++;
-        }
-        else if(m>=4 && n<4)
-        {
-            n++;
-        }
-
-    }
-*/
- 
+    mission_pos_arr[5].pose.position.z = 1.75f;
+  
     for (int count = 0; count < repeat && ros::ok(); count++)
     {
         target_loc.pose.position.x = mission_pos_arr[0].pose.position.x;
@@ -288,7 +268,7 @@ void ifor_drone::land()
 {
     mavros_msgs::CommandTOL land_cmd;
 
-    land_cmd.request.altitude = 10;
+    land_cmd.request.altitude = 1.75f;
     land_cmd.request.latitude = 0;
     land_cmd.request.longitude = 0;
     land_cmd.request.min_pitch = 0;
